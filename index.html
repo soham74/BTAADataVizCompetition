@@ -363,7 +363,7 @@
     <section id="simplicity">
         <h2 class="section-title animate-in">The Simplicity Secret</h2>
         <p class="section-insight animate-in">
-            The most iconic fight songs use ZERO clichés. The forgettable ones are stuffed with them.
+            The most iconic fight songs use ZERO clichés. Others follow every rule in the book.
         </p>
 
         <div class="comparison-grid animate-in">
@@ -484,6 +484,71 @@
         </div>
     </section>
 
+    <!-- INSIGHT 6: TRASH TALKERS -->
+    <section id="trashtalk">
+        <h2 class="section-title animate-in">The Trash Talkers</h2>
+        <p class="section-insight animate-in">
+            Only 12 schools dare to mention their opponents in their fight songs.
+            Most prefer to celebrate themselves rather than call out rivals.
+        </p>
+
+        <div class="chart-container animate-in">
+            <div id="trashTalkChart"></div>
+        </div>
+
+        <div class="takeaway animate-in">
+            Texas, Alabama, and Syracuse are among the few who write their rivals into history.
+            The other 53 schools? They keep it classy.
+        </div>
+    </section>
+
+    <!-- INSIGHT 7: CONTEST PARADOX -->
+    <section id="contest">
+        <h2 class="section-title animate-in">The Contest Paradox</h2>
+        <p class="section-insight animate-in">
+            Songs that won composition contests are MORE formulaic than organic creations.
+            Trying to impress judges leads to cliché-heavy songs.
+        </p>
+
+        <div class="stat-row animate-in">
+            <div class="stat-box">
+                <div class="stat-number">4.7</div>
+                <div class="stat-label">Avg tropes in<br>Contest Winners</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">3.4</div>
+                <div class="stat-label">Avg tropes in<br>Organic Songs</div>
+            </div>
+        </div>
+
+        <div class="chart-container animate-in">
+            <div id="contestChart"></div>
+        </div>
+
+        <div class="takeaway animate-in">
+            When you try to win a competition, you play it safe.
+            The most memorable songs weren't written to impress anyone.
+        </div>
+    </section>
+
+    <!-- INSIGHT 8: CONFERENCE PERSONALITIES -->
+    <section id="radar">
+        <h2 class="section-title animate-in">Conference Personalities</h2>
+        <p class="section-insight animate-in">
+            Each conference has a distinct "musical personality" in their fight songs.
+            Some are aggressive, some are long-winded, some love their colors.
+        </p>
+
+        <div class="chart-container animate-in">
+            <div id="radarChart"></div>
+        </div>
+
+        <div class="takeaway animate-in">
+            Big Ten: Long, traditional songs. Big 12: Short and aggressive.
+            SEC: Most likely to say "fight". ACC: Most likely to spell things out.
+        </div>
+    </section>
+
     <!-- FINAL TAKEAWAY -->
     <section id="conclusion" style="background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);">
         <h2 class="section-title animate-in" style="color: white;">The Real Formula</h2>
@@ -499,8 +564,6 @@
             <p style="font-size: 1.2rem; line-height: 1.8; opacity: 0.9;">
                 The most iconic fight songs are the ones that broke all the rules.
                 They didn't say "fight." They didn't use clichés. They were written by passionate students, not hired composers.
-                <br><br>
-                <strong>Authenticity is the only formula that works.</strong>
             </p>
         </div>
     </section>
@@ -571,29 +634,28 @@
             x: allSongs.map(s => s.tropes),
             y: allSongs.map(s => s.famous),
             text: allSongs.map(s => s.school),
-            mode: 'markers+text',
+            mode: 'markers',
             type: 'scatter',
-            textposition: 'top center',
             marker: {
-                size: 20,
+                size: 22,
                 color: allSongs.map(s => s.tropes === 0 ? '#2ecc71' : (s.tropes >= 6 ? '#e94560' : '#5dade2')),
                 line: {width: 2, color: '#fff'}
             },
-            hovertemplate: '%{text}<br>Tropes: %{x}<br>Fame Score: %{y}<extra></extra>'
+            hovertemplate: '<b>%{text}</b><br>Tropes: %{x}<br>Fame Score: %{y}<extra></extra>'
         };
 
         Plotly.newPlot('tropesChart', [tropeTrace], {
-            title: {text: 'Trope Count vs. Song Recognition', font: {family: 'Oswald', size: 18, color: '#fff'}},
+            title: {text: 'Trope Count vs. Song Recognition (hover for details)', font: {family: 'Oswald', size: 18, color: '#fff'}},
             paper_bgcolor: 'rgba(0,0,0,0)',
             plot_bgcolor: 'rgba(0,0,0,0)',
             font: {color: '#a0a0a0'},
-            xaxis: {title: 'Number of Tropes (clichés)', gridcolor: 'rgba(255,255,255,0.1)', range: [-0.5, 9]},
+            xaxis: {title: 'Number of Tropes (clichés)', gridcolor: 'rgba(255,255,255,0.1)', range: [-1, 10]},
             yaxis: {title: 'Fame/Recognition Score', gridcolor: 'rgba(255,255,255,0.1)', range: [3, 11]},
             annotations: [
-                {x: 0, y: 10.5, text: 'ICONIC & SIMPLE', showarrow: false, font: {color: '#2ecc71', size: 12}},
-                {x: 7, y: 4.5, text: 'FORMULAIC & FORGETTABLE', showarrow: false, font: {color: '#e94560', size: 12}}
+                {x: -0.5, y: 4, text: '<b>Simple & Iconic</b><br>Michigan, Tennessee', showarrow: true, ax: 40, ay: 0, arrowhead: 2, arrowcolor: '#2ecc71', font: {color: '#2ecc71', size: 11}},
+                {x: 8.5, y: 9, text: '<b>Follows the Formula</b><br>Rutgers, Pitt, Syracuse', showarrow: true, ax: -40, ay: 0, arrowhead: 2, arrowcolor: '#e94560', font: {color: '#e94560', size: 11}}
             ],
-            margin: {t: 60}
+            margin: {t: 60, r: 120, l: 60}
         }, {responsive: true});
 
         // CHART 3: Fight vs No Fight
@@ -639,27 +701,27 @@
             mode: 'markers',
             type: 'scatter',
             marker: {
-                size: tempoData.map(d => 10 + d.fights * 3),
+                size: tempoData.map(d => 12 + d.fights * 2.5),
                 color: tempoData.map(d => d.bpm < 100 ? '#e94560' : (d.bpm >= 150 ? '#3498db' : '#9b59b6')),
                 opacity: 0.8
             },
-            hovertemplate: '%{text}<br>BPM: %{x}<br>Fight mentions: %{y}<extra></extra>'
+            hovertemplate: '<b>%{text}</b><br>BPM: %{x}<br>Fight mentions: %{y}<extra></extra>'
         };
 
         Plotly.newPlot('tempoChart', [tempoTrace], {
-            title: {text: 'Tempo vs. Aggression (# of "Fight" Mentions)', font: {family: 'Oswald', size: 18, color: '#fff'}},
+            title: {text: 'Tempo vs. Aggression (hover for details)', font: {family: 'Oswald', size: 18, color: '#fff'}},
             paper_bgcolor: 'rgba(0,0,0,0)',
             plot_bgcolor: 'rgba(0,0,0,0)',
             font: {color: '#a0a0a0'},
-            xaxis: {title: 'Tempo (BPM)', gridcolor: 'rgba(255,255,255,0.1)'},
-            yaxis: {title: '"Fight" Mentions', gridcolor: 'rgba(255,255,255,0.1)'},
+            xaxis: {title: 'Tempo (BPM)', gridcolor: 'rgba(255,255,255,0.1)', range: [55, 190]},
+            yaxis: {title: '"Fight" Mentions', gridcolor: 'rgba(255,255,255,0.1)', range: [-1, 20]},
             shapes: [
-                {type: 'rect', x0: 60, x1: 100, y0: 0, y1: 18, fillcolor: 'rgba(233,69,96,0.1)', line: {width: 0}},
-                {type: 'rect', x0: 150, x1: 185, y0: 0, y1: 18, fillcolor: 'rgba(52,152,219,0.1)', line: {width: 0}}
+                {type: 'rect', x0: 55, x1: 100, y0: -1, y1: 20, fillcolor: 'rgba(233,69,96,0.08)', line: {width: 0}},
+                {type: 'rect', x0: 150, x1: 190, y0: -1, y1: 20, fillcolor: 'rgba(52,152,219,0.08)', line: {width: 0}}
             ],
             annotations: [
-                {x: 80, y: 17, text: 'SLOW = MORE AGGRESSIVE', showarrow: false, font: {color: '#e94560', size: 11}},
-                {x: 167, y: 17, text: 'FAST = LESS AGGRESSIVE', showarrow: false, font: {color: '#3498db', size: 11}}
+                {x: 67, y: 19, text: '<b>Slow</b>', showarrow: false, font: {color: '#e94560', size: 12}},
+                {x: 170, y: 19, text: '<b>Fast</b>', showarrow: false, font: {color: '#3498db', size: 12}}
             ],
             margin: {t: 60}
         }, {responsive: true});
@@ -695,6 +757,106 @@
             barmode: 'stack',
             xaxis: {gridcolor: 'rgba(255,255,255,0.1)'},
             yaxis: {title: 'Percentage', gridcolor: 'rgba(255,255,255,0.1)', range: [0, 100]},
+            legend: {font: {color: '#fff'}},
+            margin: {t: 60}
+        }, {responsive: true});
+
+        // CHART 6: Trash Talkers
+        const trashTalkers = ['Duke', 'Georgia Tech', 'NC State', 'Syracuse', 'Kansas',
+                              'Oklahoma St', 'Texas', 'Illinois', 'Oregon', 'UCLA', 'Alabama', 'Texas A&M'];
+        const otherSchools = 65 - trashTalkers.length;
+
+        const trashData = [{
+            values: [trashTalkers.length, otherSchools],
+            labels: ['Mention Opponents', 'Stay Classy'],
+            type: 'pie',
+            hole: 0.5,
+            marker: {colors: ['#e94560', '#2ecc71']},
+            textinfo: 'label+value',
+            textfont: {color: '#fff', size: 14},
+            hovertemplate: '%{label}: %{value} schools<extra></extra>'
+        }];
+
+        Plotly.newPlot('trashTalkChart', trashData, {
+            title: {text: 'Do Fight Songs Mention Opponents?', font: {family: 'Oswald', size: 18, color: '#fff'}},
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: '#a0a0a0'},
+            annotations: [{
+                text: '<b>Schools that mention opponents:</b><br>Duke, Georgia Tech, NC State,<br>Syracuse, Kansas, Oklahoma St,<br>Texas, Illinois, Oregon, UCLA,<br>Alabama, Texas A&M',
+                x: 1.35, y: 0.5, font: {size: 10, color: '#e94560'}, showarrow: false, align: 'left'
+            }],
+            showlegend: true,
+            legend: {font: {color: '#fff'}},
+            margin: {t: 60, r: 200}
+        }, {responsive: true});
+
+        // CHART 7: Contest Winners
+        const contestWinners = [
+            {school: 'Minnesota', tropes: 3}, {school: 'Ohio State', tropes: 5},
+            {school: 'Rutgers', tropes: 8}, {school: 'USC', tropes: 5},
+            {school: 'Washington', tropes: 4}, {school: 'Alabama', tropes: 6},
+            {school: 'Kentucky', tropes: 5}, {school: 'Miss State', tropes: 4},
+            {school: 'Missouri', tropes: 3}, {school: 'Texas A&M', tropes: 4}
+        ];
+
+        const contestTrace = {
+            x: contestWinners.map(s => s.school),
+            y: contestWinners.map(s => s.tropes),
+            type: 'bar',
+            marker: {
+                color: contestWinners.map(s => s.tropes >= 5 ? '#e94560' : '#5dade2')
+            },
+            text: contestWinners.map(s => s.tropes),
+            textposition: 'outside',
+            hovertemplate: '%{x}: %{y} tropes<extra></extra>'
+        };
+
+        Plotly.newPlot('contestChart', [contestTrace], {
+            title: {text: 'Trope Count in Contest-Winning Songs', font: {family: 'Oswald', size: 18, color: '#fff'}},
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: '#a0a0a0'},
+            xaxis: {tickangle: -45},
+            yaxis: {title: 'Number of Tropes', gridcolor: 'rgba(255,255,255,0.1)', range: [0, 10]},
+            shapes: [{
+                type: 'line', x0: -0.5, x1: 9.5, y0: 3.4, y1: 3.4,
+                line: {color: '#2ecc71', width: 2, dash: 'dash'}
+            }],
+            annotations: [{
+                x: 8, y: 3.4, text: 'Non-contest avg: 3.4', showarrow: false,
+                font: {color: '#2ecc71', size: 11}, yshift: 15
+            }],
+            margin: {t: 60, b: 100}
+        }, {responsive: true});
+
+        // CHART 8: Conference Radar
+        const conferences = ['ACC', 'Big 12', 'Big Ten', 'Pac-12', 'SEC'];
+        const confData = {
+            'ACC': {fight: 36, duration: 74, colors: 50, spelling: 57, tropes: 3.4},
+            'Big 12': {fight: 70, duration: 61, colors: 50, spelling: 50, tropes: 3.5},
+            'Big Ten': {fight: 72, duration: 81, colors: 50, spelling: 44, tropes: 3.9},
+            'Pac-12': {fight: 75, duration: 70, colors: 75, spelling: 38, tropes: 3.5},
+            'SEC': {fight: 86, duration: 68, colors: 50, spelling: 50, tropes: 3.4}
+        };
+
+        const radarTraces = conferences.map((conf, i) => ({
+            type: 'scatterpolar',
+            r: [confData[conf].fight, confData[conf].duration, confData[conf].colors * 1, confData[conf].spelling, confData[conf].tropes * 20],
+            theta: ['Say "Fight" %', 'Avg Duration', 'Mention Colors %', 'Spell Things %', 'Tropes (x20)'],
+            fill: 'toself',
+            name: conf,
+            opacity: 0.6
+        }));
+
+        Plotly.newPlot('radarChart', radarTraces, {
+            title: {text: 'Conference Fight Song Profiles', font: {family: 'Oswald', size: 18, color: '#fff'}},
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: '#a0a0a0'},
+            polar: {
+                bgcolor: 'rgba(0,0,0,0)',
+                radialaxis: {visible: true, range: [0, 100], gridcolor: 'rgba(255,255,255,0.1)'},
+                angularaxis: {gridcolor: 'rgba(255,255,255,0.1)'}
+            },
             legend: {font: {color: '#fff'}},
             margin: {t: 60}
         }, {responsive: true});
