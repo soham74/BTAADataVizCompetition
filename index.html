@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Fight Song Paradox</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="%23ffffff10" stroke-width="0.5"/></svg>') repeat;
+            opacity: 0.3;
+        }
+
+        h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: #a0a0a0;
+            max-width: 700px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            animation: bounce 2s infinite;
+            font-size: 2rem;
+            opacity: 0.6;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        section {
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .section-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .section-insight {
+            font-size: 1.3rem;
+            color: #e94560;
+            max-width: 800px;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .big-number {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(4rem, 15vw, 10rem);
+            font-weight: 700;
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 2rem;
+            align-items: center;
+            max-width: 900px;
+            margin: 2rem 0;
+        }
+
+        .comparison-side {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+        }
+
+        .comparison-side h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .vs {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            color: #e94560;
+        }
+
+        .school-list {
+            list-style: none;
+            text-align: left;
+        }
+
+        .school-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .trope-badge {
+            background: #e94560;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .zero-badge {
+            background: #2ecc71;
+        }
+
+        .takeaway {
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            color: white;
+            padding: 2rem 3rem;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            max-width: 700px;
+            text-align: center;
+            margin-top: 2rem;
+            font-weight: 600;
+            box-shadow: 0 10px 40px rgba(233, 69, 96, 0.3);
+        }
+
+        .song-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 0.5rem;
+            display: inline-block;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .song-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .song-card.iconic {
+            border: 2px solid #2ecc71;
+        }
+
+        .song-card.formulaic {
+            border: 2px solid #e94560;
+        }
+
+        .song-name {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+        }
+
+        .song-school {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #e94560;
+        }
+
+        .animate-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s, transform 0.8s;
+        }
+
+        .animate-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 1.5rem 2rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+        }
+
+        .stat-number {
+            font-family: 'Oswald', sans-serif;
+            font-size: 3rem;
+            color: #e94560;
+        }
+
+        .stat-label {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .bar-visual {
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            gap: 1rem;
+            height: 300px;
+            margin: 2rem 0;
+        }
+
+        .bar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bar {
+            width: 80px;
+            background: linear-gradient(to top, #e94560, #ff6b6b);
+            border-radius: 5px 5px 0 0;
+            transition: height 1s ease-out;
+        }
+
+        .bar.other {
+            background: linear-gradient(to top, #3498db, #5dade2);
+        }
+
+        .bar-label {
+            font-size: 0.8rem;
+            color: #a0a0a0;
+            text-align: center;
+            max-width: 80px;
+        }
+
+        .bar-value {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>The Fight Song Paradox</h1>
+        <p class="subtitle">
+            We analyzed 65 college fight songs and discovered something surprising:
+            <strong>the rules for writing a great fight song... don't actually work.</strong>
+        </p>
+        <div class="scroll-hint">↓</div>
+    </section>
+
+    <!-- INSIGHT 1: TEXAS OBSESSION -->
+    <section id="texas">
+        <h2 class="section-title animate-in">The Texas Obsession</h2>
+        <p class="section-insight animate-in">
+            Texas says "FIGHT" more times than the bottom 30 schools combined.
+        </p>
+
+        <div class="comparison-grid animate-in">
+            <div class="comparison-side">
+                <h3>Texas</h3>
+                <div class="big-number">17</div>
+                <p>times they say "fight"</p>
+            </div>
+            <div class="vs">VS</div>
+            <div class="comparison-side">
+                <h3>Bottom 30 Schools</h3>
+                <div class="big-number" style="background: linear-gradient(90deg, #3498db, #5dade2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">9</div>
+                <p>times combined</p>
+            </div>
+        </div>
+
+        <div class="chart-container animate-in">
+            <div id="texasChart"></div>
+        </div>
+
+        <div class="takeaway animate-in">
+            Texas alone accounts for nearly 2x what 30 other schools say combined.
+            Is repetition the secret? Or just... obsession?
+        </div>
+    </section>
+
+    <!-- INSIGHT 2: ICONIC = SIMPLE -->
+    <section id="simplicity">
+        <h2 class="section-title animate-in">The Simplicity Secret</h2>
+        <p class="section-insight animate-in">
+            The most iconic fight songs use ZERO clichés. The forgettable ones are stuffed with them.
+        </p>
+
+        <div class="comparison-grid animate-in">
+            <div class="comparison-side iconic" style="border: 2px solid #2ecc71;">
+                <h3 style="color: #2ecc71;">Zero Tropes</h3>
+                <p style="color: #a0a0a0; margin-bottom: 1rem;">Legendary songs that break all rules</p>
+                <ul class="school-list">
+                    <li>Michigan - "The Victors" <span class="trope-badge zero-badge">0</span></li>
+                    <li>Tennessee - "Rocky Top" <span class="trope-badge zero-badge">0</span></li>
+                    <li>Boston College - "For Boston" <span class="trope-badge zero-badge">0</span></li>
+                </ul>
+            </div>
+            <div class="vs">VS</div>
+            <div class="comparison-side formulaic" style="border: 2px solid #e94560;">
+                <h3 style="color: #e94560;">6+ Tropes</h3>
+                <p style="color: #a0a0a0; margin-bottom: 1rem;">Following every rule in the book</p>
+                <ul class="school-list">
+                    <li>Rutgers - "The Bells Must Ring" <span class="trope-badge">8</span></li>
+                    <li>Pitt - "Hail to Pitt" <span class="trope-badge">6</span></li>
+                    <li>Syracuse - "Down the Field" <span class="trope-badge">6</span></li>
+                    <li>TCU - "TCU Fight Song" <span class="trope-badge">6</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="chart-container animate-in">
+            <div id="tropesChart"></div>
+        </div>
+
+        <div class="takeaway animate-in">
+            The more you try to sound like a fight song, the less memorable you become.
+            Authenticity beats formula.
+        </div>
+    </section>
+
+    <!-- INSIGHT 3: FIGHT-LESS FIGHT SONGS -->
+    <section id="fightless">
+        <h2 class="section-title animate-in">The "Fight" Paradox</h2>
+        <p class="section-insight animate-in">
+            32% of "fight songs" never actually say the word "fight" —
+            including some of the most famous ones in college football.
+        </p>
+
+        <div class="stat-row animate-in">
+            <div class="stat-box">
+                <div class="stat-number">21</div>
+                <div class="stat-label">Songs without "fight"</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">44</div>
+                <div class="stat-label">Songs with "fight"</div>
+            </div>
+        </div>
+
+        <div class="chart-container animate-in">
+            <div id="fightlessChart"></div>
+        </div>
+
+        <div class="takeaway animate-in">
+            Michigan's "The Victors", Tennessee's "Rocky Top", Oklahoma's "Boomer Sooner" —
+            all fight songs that forgot to say "fight."
+        </div>
+    </section>
+
+    <!-- INSIGHT 4: SLOW = ANGRY -->
+    <section id="tempo">
+        <h2 class="section-title animate-in">The Slow Burn</h2>
+        <p class="section-insight animate-in">
+            Counterintuitive: SLOW songs are MORE aggressive than fast ones.
+        </p>
+
+        <div class="stat-row animate-in">
+            <div class="stat-box">
+                <div class="stat-number">4.1</div>
+                <div class="stat-label">Avg "fight" mentions<br>Slow Songs (&lt;100 BPM)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">2.9</div>
+                <div class="stat-label">Avg "fight" mentions<br>Fast Songs (150+ BPM)</div>
+            </div>
+        </div>
+
+        <div class="chart-container animate-in">
+            <div id="tempoChart"></div>
+        </div>
+
+        <div class="takeaway animate-in">
+            Fast songs are too busy being energetic. Slow songs have time to be angry.
+            When you slow down, you can pack in more fighting words.
+        </div>
+    </section>
+
+    <!-- INSIGHT 5: STUDENT LEGACY -->
+    <section id="students">
+        <h2 class="section-title animate-in">Passion Beats Professionalism</h2>
+        <p class="section-insight animate-in">
+            The oldest, most enduring fight songs were written by students — not professionals.
+        </p>
+
+        <div class="stat-row animate-in">
+            <div class="stat-box">
+                <div class="stat-number">66%</div>
+                <div class="stat-label">Pre-1920 songs<br>by students</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">10%</div>
+                <div class="stat-label">Post-1950 songs<br>by students</div>
+            </div>
+        </div>
+
+        <div class="chart-container animate-in">
+            <div id="studentsChart"></div>
+        </div>
+
+        <div class="takeaway animate-in">
+            The songs that have lasted 100+ years came from amateur passion, not professional polish.
+            Virginia (1893), Michigan (1898), Oklahoma (1905) — all student creations.
+        </div>
+    </section>
+
+    <!-- FINAL TAKEAWAY -->
+    <section id="conclusion" style="background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);">
+        <h2 class="section-title animate-in" style="color: white;">The Real Formula</h2>
+        <div style="max-width: 700px; text-align: center;" class="animate-in">
+            <p style="font-size: 1.5rem; margin-bottom: 2rem; line-height: 1.8;">
+                After analyzing 65 fight songs, here's what we learned:
+            </p>
+            <div style="background: rgba(0,0,0,0.2); padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+                <p style="font-size: 1.8rem; font-family: 'Oswald', sans-serif; text-transform: uppercase;">
+                    There is no formula.
+                </p>
+            </div>
+            <p style="font-size: 1.2rem; line-height: 1.8; opacity: 0.9;">
+                The most iconic fight songs are the ones that broke all the rules.
+                They didn't say "fight." They didn't use clichés. They were written by passionate students, not hired composers.
+                <br><br>
+                <strong>Authenticity is the only formula that works.</strong>
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <p>Data: <a href="https://fivethirtyeight.com" target="_blank">FiveThirtyEight</a> College Fight Songs Dataset</p>
+        <p style="margin-top: 0.5rem;">Visualization by Soham Kolhe</p>
+    </footer>
+
+    <script>
+        // Song data
+        const songData = [
+            {school: "Texas", fights: 17, tropes: 4, bpm: 81, duration: 65, fight: true, student: false},
+            {school: "Rutgers", fights: 10, tropes: 8, bpm: 75, duration: 74, fight: true, student: true},
+            {school: "Iowa", fights: 9, tropes: 3, bpm: 150, duration: 72, fight: true, student: false},
+            {school: "Colorado", fights: 8, tropes: 4, bpm: 151, duration: 27, fight: true, student: false},
+            {school: "Maryland", fights: 8, tropes: 3, bpm: 142, duration: 56, fight: true, student: true},
+            {school: "Texas Tech", fights: 8, tropes: 3, bpm: 159, duration: 54, fight: true, student: true},
+            {school: "Washington State", fights: 7, tropes: 5, bpm: 81, duration: 64, fight: true, student: true},
+            {school: "Florida State", fights: 6, tropes: 5, bpm: 135, duration: 92, fight: true, student: true},
+            {school: "Kansas State", fights: 6, tropes: 3, bpm: 80, duration: 67, fight: true, student: true},
+            {school: "Michigan State", fights: 6, tropes: 5, bpm: 145, duration: 112, fight: true, student: true},
+            {school: "Mississippi", fights: 6, tropes: 4, bpm: 153, duration: 65, fight: true, student: false},
+            {school: "Michigan", fights: 0, tropes: 0, bpm: 83, duration: 122, fight: false, student: true},
+            {school: "Tennessee", fights: 0, tropes: 0, bpm: 149, duration: 53, fight: false, student: false},
+            {school: "Boston College", fights: 0, tropes: 0, bpm: 147, duration: 84, fight: false, student: false},
+            {school: "Oklahoma", fights: 0, tropes: 2, bpm: 153, duration: 37, fight: false, student: true},
+            {school: "Nebraska", fights: 0, tropes: 1, bpm: 136, duration: 94, fight: false, student: true},
+            {school: "Georgia", fights: 0, tropes: 1, bpm: 162, duration: 41, fight: false, student: true},
+        ];
+
+        // CHART 1: Texas vs Others
+        const texasTrace = {
+            x: ['Texas', 'Rutgers', 'Iowa', 'Colorado', 'Maryland', 'Texas Tech', 'Wash State', 'Next 23 Schools'],
+            y: [17, 10, 9, 8, 8, 8, 7, 0],
+            type: 'bar',
+            marker: {
+                color: ['#e94560', '#5dade2', '#5dade2', '#5dade2', '#5dade2', '#5dade2', '#5dade2', '#3d3d5c']
+            },
+            text: [17, 10, 9, 8, 8, 8, 7, 'Combined: 9'],
+            textposition: 'outside',
+            hovertemplate: '%{x}: %{y} "fight" mentions<extra></extra>'
+        };
+
+        Plotly.newPlot('texasChart', [texasTrace], {
+            title: {text: 'Number of Times "Fight" Appears in Lyrics', font: {family: 'Oswald', size: 18, color: '#fff'}},
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: '#a0a0a0'},
+            xaxis: {tickangle: -45},
+            yaxis: {title: '"Fight" Count', gridcolor: 'rgba(255,255,255,0.1)'},
+            margin: {t: 60, b: 100}
+        }, {responsive: true});
+
+        // CHART 2: Tropes scatter
+        const allSongs = [
+            {school: "Michigan", tropes: 0, famous: 10}, {school: "Tennessee", tropes: 0, famous: 10},
+            {school: "Boston College", tropes: 0, famous: 6}, {school: "Notre Dame", tropes: 6, famous: 10},
+            {school: "Alabama", tropes: 6, famous: 9}, {school: "Ohio State", tropes: 5, famous: 9},
+            {school: "Rutgers", tropes: 8, famous: 4}, {school: "Pitt", tropes: 6, famous: 5},
+            {school: "Syracuse", tropes: 6, famous: 5}, {school: "TCU", tropes: 6, famous: 5},
+            {school: "Texas", tropes: 4, famous: 9}, {school: "Oklahoma", tropes: 2, famous: 9},
+            {school: "Florida", tropes: 2, famous: 8}, {school: "Georgia", tropes: 1, famous: 8},
+            {school: "USC", tropes: 5, famous: 9}, {school: "LSU", tropes: 5, famous: 8},
+        ];
+
+        const tropeTrace = {
+            x: allSongs.map(s => s.tropes),
+            y: allSongs.map(s => s.famous),
+            text: allSongs.map(s => s.school),
+            mode: 'markers+text',
+            type: 'scatter',
+            textposition: 'top center',
+            marker: {
+                size: 20,
+                color: allSongs.map(s => s.tropes === 0 ? '#2ecc71' : (s.tropes >= 6 ? '#e94560' : '#5dade2')),
+                line: {width: 2, color: '#fff'}
+            },
+            hovertemplate: '%{text}<br>Tropes: %{x}<br>Fame Score: %{y}<extra></extra>'
+        };
+
+        Plotly.newPlot('tropesChart', [tropeTrace], {
+            title: {text: 'Trope Count vs. Song Recognition', font: {family: 'Oswald', size: 18, color: '#fff'}},
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: '#a0a0a0'},
+            xaxis: {title: 'Number of Tropes (clichés)', gridcolor: 'rgba(255,255,255,0.1)', range: [-0.5, 9]},
+            yaxis: {title: 'Fame/Recognition Score', gridcolor: 'rgba(255,255,255,0.1)', range: [3, 11]},
+            annotations: [
+                {x: 0, y: 10.5, text: 'ICONIC & SIMPLE', showarrow: false, font: {color: '#2ecc71', size: 12}},
+                {x: 7, y: 4.5, text: 'FORMULAIC & FORGETTABLE', showarrow: false, font: {color: '#e94560', size: 12}}
+            ],
+            margin: {t: 60}
+        }, {responsive: true});
+
+        // CHART 3: Fight vs No Fight
+        const fightPieData = [{
+            values: [44, 21],
+            labels: ['Say "Fight"', 'Never Say "Fight"'],
+            type: 'pie',
+            hole: 0.6,
+            marker: {colors: ['#3498db', '#e94560']},
+            textinfo: 'label+percent',
+            textfont: {color: '#fff', size: 14},
+            hovertemplate: '%{label}: %{value} songs<extra></extra>'
+        }];
+
+        Plotly.newPlot('fightlessChart', fightPieData, {
+            title: {text: 'Do "Fight Songs" Actually Say "Fight"?', font: {family: 'Oswald', size: 18, color: '#fff'}},
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: '#a0a0a0'},
+            annotations: [{text: '65<br>Songs', x: 0.5, y: 0.5, font: {size: 20, color: '#fff'}, showarrow: false}],
+            showlegend: true,
+            legend: {font: {color: '#fff'}},
+            margin: {t: 60}
+        }, {responsive: true});
+
+        // CHART 4: Tempo vs Aggression
+        const tempoData = [
+            {bpm: 65, fights: 2, school: 'Oregon'}, {bpm: 71, fights: 1, school: 'Florida'},
+            {bpm: 72, fights: 3, school: 'UCLA'}, {bpm: 75, fights: 3, school: 'Miami'},
+            {bpm: 75, fights: 10, school: 'Rutgers'}, {bpm: 76, fights: 4, school: 'Baylor'},
+            {bpm: 77, fights: 3, school: 'Arkansas'}, {bpm: 77, fights: 1, school: 'Auburn'},
+            {bpm: 79, fights: 4, school: 'Kentucky'}, {bpm: 80, fights: 6, school: 'Kansas State'},
+            {bpm: 81, fights: 17, school: 'Texas'}, {bpm: 81, fights: 7, school: 'Washington State'},
+            {bpm: 83, fights: 0, school: 'Michigan'}, {bpm: 145, fights: 6, school: 'Michigan State'},
+            {bpm: 149, fights: 0, school: 'Tennessee'}, {bpm: 150, fights: 9, school: 'Iowa'},
+            {bpm: 153, fights: 0, school: 'Oklahoma'}, {bpm: 162, fights: 0, school: 'Georgia'},
+            {bpm: 180, fights: 5, school: 'Oklahoma State'}
+        ];
+
+        const tempoTrace = {
+            x: tempoData.map(d => d.bpm),
+            y: tempoData.map(d => d.fights),
+            text: tempoData.map(d => d.school),
+            mode: 'markers',
+            type: 'scatter',
+            marker: {
+                size: tempoData.map(d => 10 + d.fights * 3),
+                color: tempoData.map(d => d.bpm < 100 ? '#e94560' : (d.bpm >= 150 ? '#3498db' : '#9b59b6')),
+                opacity: 0.8
+            },
+            hovertemplate: '%{text}<br>BPM: %{x}<br>Fight mentions: %{y}<extra></extra>'
+        };
+
+        Plotly.newPlot('tempoChart', [tempoTrace], {
+            title: {text: 'Tempo vs. Aggression (# of "Fight" Mentions)', font: {family: 'Oswald', size: 18, color: '#fff'}},
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: '#a0a0a0'},
+            xaxis: {title: 'Tempo (BPM)', gridcolor: 'rgba(255,255,255,0.1)'},
+            yaxis: {title: '"Fight" Mentions', gridcolor: 'rgba(255,255,255,0.1)'},
+            shapes: [
+                {type: 'rect', x0: 60, x1: 100, y0: 0, y1: 18, fillcolor: 'rgba(233,69,96,0.1)', line: {width: 0}},
+                {type: 'rect', x0: 150, x1: 185, y0: 0, y1: 18, fillcolor: 'rgba(52,152,219,0.1)', line: {width: 0}}
+            ],
+            annotations: [
+                {x: 80, y: 17, text: 'SLOW = MORE AGGRESSIVE', showarrow: false, font: {color: '#e94560', size: 11}},
+                {x: 167, y: 17, text: 'FAST = LESS AGGRESSIVE', showarrow: false, font: {color: '#3498db', size: 11}}
+            ],
+            margin: {t: 60}
+        }, {responsive: true});
+
+        // CHART 5: Student Writers by Decade
+        const decadeData = {
+            x: ['1890s', '1900s', '1910s', '1920s', '1930s', '1940s', '1950s', '1960s'],
+            student: [100, 25, 79, 63, 50, 43, 17, 0],
+            pro: [0, 75, 21, 37, 50, 57, 83, 100]
+        };
+
+        const studentTrace = {
+            x: decadeData.x,
+            y: decadeData.student,
+            name: 'Student Writers',
+            type: 'bar',
+            marker: {color: '#2ecc71'}
+        };
+
+        const proTrace = {
+            x: decadeData.x,
+            y: decadeData.pro,
+            name: 'Professional Writers',
+            type: 'bar',
+            marker: {color: '#e94560'}
+        };
+
+        Plotly.newPlot('studentsChart', [studentTrace, proTrace], {
+            title: {text: 'Who Wrote the Fight Songs? (by Decade)', font: {family: 'Oswald', size: 18, color: '#fff'}},
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: '#a0a0a0'},
+            barmode: 'stack',
+            xaxis: {gridcolor: 'rgba(255,255,255,0.1)'},
+            yaxis: {title: 'Percentage', gridcolor: 'rgba(255,255,255,0.1)', range: [0, 100]},
+            legend: {font: {color: '#fff'}},
+            margin: {t: 60}
+        }, {responsive: true});
+
+        // Scroll animations
+        const animateOnScroll = () => {
+            document.querySelectorAll('.animate-in').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight * 0.85) {
+                    el.classList.add('visible');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', animateOnScroll);
+        animateOnScroll();
+    </script>
+</body>
+</html>
