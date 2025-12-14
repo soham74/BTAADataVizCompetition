@@ -621,11 +621,11 @@
 
         // CHART 2: Tropes scatter
         const allSongs = [
-            {school: "Michigan", tropes: 0, famous: 10}, {school: "Tennessee", tropes: 0, famous: 10},
+            {school: "Michigan", tropes: 0, famous: 10}, {school: "Tennessee", tropes: 0, famous: 9.3},
             {school: "Boston College", tropes: 0, famous: 6}, {school: "Notre Dame", tropes: 6, famous: 10},
             {school: "Alabama", tropes: 6, famous: 9}, {school: "Ohio State", tropes: 5, famous: 9},
             {school: "Rutgers", tropes: 8, famous: 4}, {school: "Pitt", tropes: 6, famous: 5},
-            {school: "Syracuse", tropes: 6, famous: 5}, {school: "TCU", tropes: 6, famous: 5},
+            {school: "Syracuse", tropes: 6, famous: 5.5}, {school: "TCU", tropes: 6, famous: 4.5},
             {school: "Texas", tropes: 4, famous: 9}, {school: "Oklahoma", tropes: 2, famous: 9},
             {school: "Florida", tropes: 2, famous: 8}, {school: "Georgia", tropes: 1, famous: 8},
             {school: "USC", tropes: 5, famous: 9}, {school: "LSU", tropes: 5, famous: 8},
@@ -653,8 +653,8 @@
             xaxis: {title: 'Number of Tropes (clichés)', gridcolor: 'rgba(255,255,255,0.1)', range: [-1, 10]},
             yaxis: {title: 'Fame/Recognition Score', gridcolor: 'rgba(255,255,255,0.1)', range: [3, 11]},
             annotations: [
-                {x: -0.5, y: 4, text: '<b>Simple & Iconic</b><br>Michigan, Tennessee', showarrow: true, ax: 40, ay: 0, arrowhead: 2, arrowcolor: '#2ecc71', font: {color: '#2ecc71', size: 11}},
-                {x: 8.5, y: 9, text: '<b>Follows the Formula</b><br>Rutgers, Pitt, Syracuse', showarrow: true, ax: -40, ay: 0, arrowhead: 2, arrowcolor: '#e94560', font: {color: '#e94560', size: 11}}
+                {x: -0.5, y: 4.5, text: '<b>Zero Tropes</b><br>Michigan, Tennessee,<br>Boston College', showarrow: true, ax: 50, ay: 0, arrowhead: 2, arrowcolor: '#2ecc71', font: {color: '#2ecc71', size: 11}},
+                {x: 8.5, y: 9, text: '<b>6+ Tropes</b><br>Rutgers, Pitt, Syracuse', showarrow: true, ax: -40, ay: 0, arrowhead: 2, arrowcolor: '#e94560', font: {color: '#e94560', size: 11}}
             ],
             margin: {t: 60, r: 120, l: 60}
         }, {responsive: true});
